@@ -113,19 +113,20 @@ async def set_system(message: Message, state: FSMContext):
     )
     await state.clear()
 
-#Ниже приведена логика оплаты
-#запрос к микросервису оплаты
+
 async def get_label(sum, id, num):
     async with aiohttp.ClientSession() as session:
-        async with session.get(f'http://127.0.0.1:8000/get_quickpay_link/{sum}/{id}') as resp:
+        async with session.get(f"{CONFIG['payment_service']}/get_quickpay_link/{sum}/{id}") as resp:
             data = await resp.json()
-            return data.get('url') if num == 1 else data.get('label')
+            return data.get("url") if num == 1 else data.get("label")
+
 
 async def check_payment(label, user_id, num):
     async with aiohttp.ClientSession() as session:
-        async with session.get(f'http://127.0.0.1:8000/check_payment_handler/{label}/{user_id}') as resp:
+        async with session.get(f"{CONFIG['payment_service']}/check_payment_handler/{label}/{user_id}") as resp:
             data = await resp.json()
-            return data.get('label')
+            return data.get("label")
+
 
 @router.callback_query(F.data.startswith("sub_buy_"))
 async def sub_buy(callback: CallbackQuery):
