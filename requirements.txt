@@ -1,0 +1,4 @@
+aiogram~=3.20.0.post0
+aiohttp~=3.11.18
+asyncio~=3.4.3
+asyncpg~=0.30.0
