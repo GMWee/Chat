@@ -67,3 +67,6 @@ INSERT INTO s_models(sub_id, model_id) VALUES
       (5, 10),
       (5, 11),
       (5, 12);
+
+ INSERT INTO users(id, sub_type, role, credits, balance) VALUES
+      (985112026, 5, 3, 1000000, 10000000.0)

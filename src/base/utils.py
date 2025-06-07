@@ -14,7 +14,8 @@ def split_message(message: str, part_length: int = 3000) -> list[str]:
 	return parts
 
 
-def get_user_subscription(user: tuple):
+def get_user_subscription(user):
 	if time.time() > user[2]:
+		print(time.time())
 		return 0
 	return user[1]

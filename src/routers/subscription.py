@@ -29,59 +29,8 @@ class sum:
 	sum = 20
 
 SUM = sum()
-@router.message(Command('info'))
-async def info(message: Message):
-	user_id = message.chat.id
-	user = await DATABASE.get_or_create_user(user_id)
-	sub = get_user_subscription(user)
-	balance = await DATABASE.get_or_create_user(user_id)
-	sub_info = await DATABASE.get_subscription(sub)
-	sub_models = await DATABASE.get_subscription_models(sub)
-	current_model = await DATABASE.get_model(user[4])
-	cred = user[5]
 
-	if time.time() > user[6]:
-		cred = sub_info[2]
-		await DATABASE.set_credits_info(user_id, cred, 0)
-
-	text = "❗️ Информация\n\n"
-	text += f"— *Баланс:* {float(balance[11])}⭐\n"
-	text += f"— *Подписка*: {sub_info[1]}\n"
-	text += f"— *Выбранная модель*: {current_model[1]}\n"
-	text += f"— *Кредиты*: _{cred}💎 / {sub_info[2]}💎_\n"
-	if sub_info[4] == 0:
-		text += f"— *Фото недоступны*\n\n"
-	else:
-		text += f"— *Стоимость фото*: _{sub_info[4]}💎_\n\n"
-	text += "🤖 Доступные модели:\n"
-
-	for mod in sub_models:
-		model = await DATABASE.get_model(mod[0])
-		text += f"— {model[1]}\n"
-
-	await message.answer(text, parse_mode="Markdown")
-
-@router.callback_query(F.data.startswith("sub_info_"))
-async def sub_info(callback: CallbackQuery):
-	_id = int(callback.data[len("sub_info_"):])
-	sub = await DATABASE.get_subscription(_id)
-	sub_models = await DATABASE.get_subscription_models(_id)
-
-	text = f"<b>{sub[1]}</b>\n"
-	text += f"💲 <b>Цена:</b> <em>{sub[5]}₽ / месяц</em>\n\n"
-	text += "❗️ <b>Основная информация:</b>\n"
-	text += f"— <b>{sub[2]}💎</b> <em>в час</em>\n"
-	text += f"— <b>Стоимость фото: {sub[3]}💎</b>\n\n"
-	text += "🤖 <b>Доступные модели:</b>\n"
-
-	for mod in sub_models:
-		model = await DATABASE.get_model(mod[0])
-		text += f"— {model[1]}\n"
-
-	await callback.message.answer(text, parse_mode="HTML")
-	await callback.answer()
-
-@router.message(Command("donate"))
+@router.message(Command("pay"))
 async def cmd_system(message: Message, state: FSMContext):
     await message.answer("⭐️*Введите сумму не менее 20 рублей.\n(1⭐️ = 1₽):*", parse_mode="Markdown")
     await state.set_state(SetState.sum)

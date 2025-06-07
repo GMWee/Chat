@@ -2,7 +2,7 @@ import aiogram
 import aiohttp
 
 from src.base.config import CONFIG
-from src.routers import messages, settings, subscription
+from src.routers import messages, settings, subscription, donate
 from src.base.database import DATABASE
 
 
@@ -24,6 +24,7 @@ class Bot:
 
 		await self._set_commands()
 
+		dispatch.include_router(donate.router)
 		dispatch.include_router(subscription.router)
 		dispatch.include_router(settings.router)
 		dispatch.include_router(messages.router)
@@ -37,7 +38,8 @@ class Bot:
 
 	async def _set_commands(self):
 		commands = [
-			aiogram.types.BotCommand(command="donate", description="Преобрести подписку"),
+			aiogram.types.BotCommand(command="pay", description="Пополнить виртуальный кошелек"),
+			aiogram.types.BotCommand(command="buy", description="Преобрести подписку"),
 			aiogram.types.BotCommand(command="reset", description="Очистить системный промпт"),
 			aiogram.types.BotCommand(command="system", description="Задать системный промпт"),
 			aiogram.types.BotCommand(command="clear", description="Очистить историю чата"),
