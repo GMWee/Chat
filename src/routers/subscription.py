@@ -10,12 +10,11 @@ import datetime
 import json
 import logging
 import aiohttp
-import time
-from urllib.parse import urlencode, quote
+
 
 from src.base.config import CONFIG
 from src.base.database import DATABASE
-from src.base.utils import get_user_subscription
+
 
 YOOMONEY_API_URL = "https://yoomoney.ru/api/operation-history"
 
