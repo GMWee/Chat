@@ -130,7 +130,7 @@ async def buy_sub(callback: CallbackQuery):
     sub_info = await DATABASE.get_subscription(sub_id)
     user = await DATABASE.get_or_create_user(user_id)
     sum = user[11] - sub_info[5]
-    datatime = (60 * 24 * 28) + time.time()
+    datatime = (60 * 60 * 24 * 28) + time.time()
     await DATABASE.set_user_subscription(user_id, sub_id, datatime)
     await DATABASE.set_user_balance(sum, user_id)
     # Здесь ошибка - нужно получить пользователя заново

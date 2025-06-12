@@ -1,5 +1,8 @@
 import time
 
+from src.base.database import DATABASE
+
+
 
 def split_message(message: str, part_length: int = 3000) -> list[str]:
 	parts = []
@@ -12,7 +15,6 @@ def split_message(message: str, part_length: int = 3000) -> list[str]:
 	if message:
 		parts.append(message)
 	return parts
-
 
 def get_user_subscription(user):
 	if time.time() > user[2]:

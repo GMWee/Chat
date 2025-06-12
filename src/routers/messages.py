@@ -52,6 +52,8 @@ async def dec_user_credits(message: Message, user_id: int, is_photo: bool, is_vo
 		return True
 
 	sub = get_user_subscription(user)
+	if sub == 0:
+		await DATABASE.set_user_setting(user[0], "setting_model", 12)
 	sub_info = await DATABASE.get_subscription(sub)
 	amount = sub_info[3] if is_photo else 1
 
