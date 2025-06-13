@@ -64,14 +64,14 @@ async def set_system(message: Message, state: FSMContext):
 
 async def get_label(sum, id, num):
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"{CONFIG['payment_service']}/get_quickpay_link/{sum}/{id}") as resp:
+        async with session.get(f"http://127.0.0.1/get_quickpay_link/{sum}/{id}/{CONFIG['api_key']}") as resp:
             data = await resp.json()
             return data.get("url") if num == 1 else data.get("label")
 
 
 async def check_payment(label, user_id, num):
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"{CONFIG['payment_service']}/check_payment_handler/{label}/{user_id}") as resp:
+        async with session.get(f"http://127.0.0.1/check_payment_handler/{label}/{user_id}/{CONFIG['api_key']}") as resp:
             data = await resp.json()
             return data.get("label")
 
