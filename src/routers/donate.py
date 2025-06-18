@@ -18,13 +18,13 @@ async def format_subscription_info(sub_info, sub_models):
     if sub_info[3] == 0:
         text += f"недоступны\n"
     else:
-        text += f"Стоимость  {sub_info[3]}💎_\n"
+        text += f"Стоимость  {sub_info[3]}💎\n"
     text += f"— <b>Голосовые сообщения</b>: "
     if sub_info[-1] == 0:
         text += f"недоступны\n"
     else:
-        text += f"Стоимость  {sub_info[7]}💎_\n"
-    text += f"— <b>Длина контекста</b>:  {sub_info[6]}💎\n\n"
+        text += f"Стоимость  {sub_info[7]}💎\n"
+    text += f"— <b>Длина контекста</b>:  {sub_info[6]} 💬\n\n"
     text += f"🤖 Доступные модели:\n"
 
     for mod in sub_models:
@@ -70,11 +70,11 @@ async def info(message: Message):
     text += f"— *Баланс:* {float(user[11])}⭐\n"
     text += f"— *Подписка*: {sub_info[1]}\n"
     text += f"— *Выбранная модель*: {current_model[1]}\n"
-    text += f"— *Кредиты*: _{cred}💎 / {sub_info[2]}💎_\n"
+    text += f"— *Кредиты*: _{cred}💎 / {sub_info[2]}💎\n"
     if sub_info[4] == 0:
         text += "— *Фото недоступны*\n\n"
     else:
-        text += f"— *Стоимость фото*: _{sub_info[4]}💎_\n\n"
+        text += f"— *Стоимость фото*: {sub_info[4]}💎\n\n"
     text += "🤖 Доступные модели:\n"
 
     for mod in sub_models:
@@ -131,9 +131,11 @@ async def buy_sub(callback: CallbackQuery):
     user = await DATABASE.get_or_create_user(user_id)
     sum = user[11] - sub_info[5]
     datatime = (60 * 60 * 24 * 28) + time.time()
+    print(datatime)
+    print(time.time())
+    print(datatime-time.time())
     await DATABASE.set_user_subscription(user_id, sub_id, datatime)
     await DATABASE.set_user_balance(sum, user_id)
-    # Здесь ошибка - нужно получить пользователя заново
     updated_user = await DATABASE.get_or_create_user(user_id)
     await callback.message.edit_text(
         f"Подписка успешно изменена на {sub_info[1]}\n\n"

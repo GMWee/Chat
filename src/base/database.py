@@ -38,7 +38,8 @@ class ProjectDatabase(Database):
 			res = await self.execute_get_query("SELECT * FROM users WHERE id = $1", (tg_id,))
 			return res[0] if res else None # Corrected handling of empty result.
 		return res[0] if res else None
-
+	
+	
 	async def get_subscriptions(self):
 		return await self.execute_get_query("SELECT * FROM subscriptions")
 
@@ -60,7 +61,7 @@ class ProjectDatabase(Database):
 		return await self.execute_get_query("SELECT * FROM u_context WHERE user_id = $1", (user_id,))
 
 	async def add_context_message(self, user_id: int, message: str, role: str, image_data: str | None = None):
-		return await self.execute_query("INSERT INTO u_context(user_id, role, image_data, content) VALUES ($1, $2, $3, $4)", (user_id, role, image_data, message))
+		return await self.execute_query("INSERT INTO u_context(user_id, role, image_data, content) VALUES ($1, $2, $3, $4)", (user_id, role, image_data, message,))
 
 	async def info_api_key(self, client_id: str):
 		return await self.execute_get_query("SELECT * FROM api_key WHERE client_id = $1", (client_id,))
@@ -88,10 +89,10 @@ class ProjectDatabase(Database):
 
 	async def set_user_setting(self, user_id: int, name: str, value: int | str | float):
 		await self.execute_query(f"UPDATE users SET {name} = $1 WHERE id = $2", (value, user_id))
-
+	
 	async def limit_user_context_length(self, user_id: int, limit: int):
 		await self.execute_query(
-			"DELETE FROM u_context WHERE timestamp NOT IN ("
+			"DELETE FROM u_context WHERE user_id = $1 AND timestamp NOT IN ("
 			"SELECT timestamp FROM u_context WHERE user_id = $1 ORDER BY timestamp DESC LIMIT $2"
 			")",
 			(user_id, limit))

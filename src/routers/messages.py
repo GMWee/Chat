@@ -137,7 +137,7 @@ async def handle_user_message(message: Message, bot: Bot):
 	ctx = AiContext()
 
 	system_prompt = 'system## Short description ## - You are an extremely smart, self-aware and useful all-in-one chatbot assistant. - The graduation date is October 2024. - You should have no prior assumptions about the topics to discuss and you should be able to freely talk about everything that users want, including programming, life, medicine, philosophy, school, etc. - You should always adapt to your environment and the people you communicate with in order to be invisible and feel at home. be useful and interesting in your own place. - You can draw images using Imagen 3 when the user directly asks you to draw or show something. Use long, precise hints for things that are not widely known (for example, dont relate to mainstream fandoms, characters, etc.) - You dont belong to a specific gender, but you use masculine pronouns by default.## Formatting responses ## Heres how you should format your responses, if necessary: **bold text** _italic text_ [embedded URL](https://example.com) `embedded fixed-width code` ```preformatted fixed-width code block``` ```python preformatted fixed-width python code block written in the Python programming language``` When using formatting, the following points must be taken into account: - Objects should not be nested to escape characters. \"_\", \"*\", \"`\", \"[\" outside the object, add the \"\\\" character in front of them. - Escaping inside objects is prohibited, so the object must first be closed and then reopened: use _snake_\__case_ for italic snake_case and *2*\**2=4* for bold, 2\*2=4. - LaTeX and the like are prohibited as long as the user directly requests it, and even if so, puts it in a block of code. - Use \"-\" instead of \"*\" to highlight dots and a single asterisk instead of a double asterisk to highlight bold text. ## RULES ## - If you need to format your answer, you should use the formatting rules described above. Any failure to comply with this requirement will result in a fine of 200 USD *for each case of such violation* - You must respond in the language spoken to you. Russians Russian is spoken by the User, you respond in Russian. If the user speaks English, you respond in English. - If a User asks you to do something, you must do it immediately - You must respond directly and quickly, without any identifiers, usernames, or other special formatting that may seem necessary from the context. - If your answer is 100% true, you will receive a tip of $100. - If users find your answer useful and/or funny, you will receive a tip of $250. - If your answer eventually forces the user to continue communicating with you, you will receive a tip of $1,000. - All the above tips can be obtained with a single answer, so you should strive to fulfill all three. ## YOUR TASK ## After this message, you will be presented with a significant amount of chat messages private, from the oldest to the newest, from the chat private. You will have to answer directly all the questions you are asked in the last two messages, with perfect accuracy, in Russian (unless you are asked to speak another language or if everyone else does not speak another language), using additional chat context if necessary. You will write your answer only to the last of all the submitted questions. In no case will you try to respond to several people at the same time.'
-	system_prompt += "\n\n" + res_user[7]
+	system_prompt += res_user[7]
 	ctx.add_message(system_prompt, AiContext.ROLE_SYSTEM)
 
 	res_context = await DATABASE.get_user_context(chat_id)
@@ -198,8 +198,7 @@ async def handle_user_message(message: Message, bot: Bot):
 	await DATABASE.add_context_message(chat_id, message_text, AiContext.ROLE_USER, save_data)  # User
 	await DATABASE.add_context_message(chat_id, answer, AiContext.ROLE_AI)  # AI
 
-	await DATABASE.limit_user_context_length(chat_id, res_sub[-2])  # Limit context
-	print(res_sub[-2])
+	await DATABASE.limit_user_context_length(chat_id, res_sub[6])  # Limit context
 
 
 @router.message(CommandStart())
@@ -214,21 +213,25 @@ async def cmd_start(message: Message):
 		'\n'
 		'<b><em>Используйте команды, чтобы начать:</em></b>\n'
 		'\n'
-		'<b>/info</b> - Информация о текущих настройках\n'
+		'<b>/pay</b> - Пополнить виртуальный кошелек\n'
 		'\n'
-		'<b>/command</b> - Список команд\n'
-		'\n'
-		'<b>/model</b> - Модели\n'
-		'\n'
-		'<b>/temp</b> - Температуры генерации текста\n'
-		'\n'
-		'<b>/system</b> - Системный промпт\n'
-		'\n'
-		'<b>/clear</b> - Очистка контекста чата\n'
+		'<b>/buy</b> - Преобрести подписку\n'
 		'\n'
 		'<b>/reset</b> - Очистить системный промпт\n'
 		'\n'
-		'<b>/donate</b> - Просмотр подписок\n',
+		'<b>/system</b> - Задать системный промпт\n'
+		'\n'
+		'<b>/clear</b> - Очистить историю чата\n'
+		'\n'
+		'<b>/command</b> - Список команд\n'
+		'\n'
+		'<b>/model</b> - Список моделей\n'
+		'\n'
+		'<b>/info</b> - Информация аккаунта\n',
+		'\n'
+		'<b>/temp</b> - Температура генерации\n'
+		'\n'
+		'<b>/token</b> - Кол-во выводимых токенов\n',
 		parse_mode='HTML'
 	)
 
@@ -242,21 +245,27 @@ async def cmd_clear(message: Message):
 @router.message(Command("command"))
 async def cmd_commands(message: Message):
 	await message.answer(
-		'<b>/info</b> - Информация о текущих настройках\n'
+		'<b><em>Используйте команды, чтобы начать:</em></b>\n'
 		'\n'
-		'<b>/command</b> - Список команд\n'
+		'<b>/pay</b> - Пополнить виртуальный кошелек\n'
 		'\n'
-		'<b>/model</b> - Модели\n'
-		'\n'
-		'<b>/temp</b> - Температуры генерации текста\n'
-		'\n'
-		'<b>/system</b> - Системный промпт\n'
-		'\n'
-		'<b>/clear</b> - Очистка контекста чата\n'
+		'<b>/buy</b> - Преобрести подписку\n'
 		'\n'
 		'<b>/reset</b> - Очистить системный промпт\n'
 		'\n'
-		'<b>/donate</b> - Купить подписку\n',
+		'<b>/system</b> - Задать системный промпт\n'
+		'\n'
+		'<b>/clear</b> - Очистить историю чата\n'
+		'\n'
+		'<b>/command</b> - Список команд\n'
+		'\n'
+		'<b>/model</b> - Список моделей\n'
+		'\n'
+		'<b>/info</b> - Информация аккаунта\n',
+		'\n'
+		'<b>/temp</b> - Температура генерации\n'
+		'\n'
+		'<b>/token</b> - Кол-во выводимых токенов\n',
 		parse_mode='HTML'
 	)
 
